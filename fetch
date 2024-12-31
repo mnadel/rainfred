@@ -59,7 +59,7 @@ for item in export["items"]:
     tag = " ".join([f"#{x}" for x in tags])
 
     if tag and collection:
-        subtitle = f"{tag} [{collection}] {url}"
+        subtitle = f"[{collection}] {tag} {url}"
     elif collection:
         subtitle = f"[{collection}] {url}"
     elif tag:
