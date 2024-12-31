@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+
+import re
+import os
+import sys
+import json
+import logging
+from urllib.parse import urlparse
+from urllib.request import Request, urlopen
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(
+    stream=sys.stdout,
+    format='[%(asctime)s] %(levelname)s * %(message)s',
+    level=logging.DEBUG if os.getenv("DEBUG") else logging.ERROR)
+
+if "RAINDROP_TOKEN" not in os.environ or not os.environ["RAINDROP_TOKEN"]:
+    logging.error("missing raindrop token")
+    sys.exit(1)
+
+req = Request("https://api.raindrop.io/rest/v1/collections")
+req.add_header("Authorization", f"Bearer {os.environ['RAINDROP_TOKEN']}")
+
+resp = urlopen(req, timeout=5)
+collections = json.loads(resp.read())
+if "items" not in collections:
+    logging.error("failed to fetch raindrop collections")
+    sys.exit(1)
+
+collections = {x["_id"]: x["title"] for x in collections["items"]}
+
+req = Request("https://api.raindrop.io/rest/v1/raindrops/0")
+req.add_header("Authorization", f"Bearer {os.environ['RAINDROP_TOKEN']}")
+
+resp = urlopen(req, timeout=5)
+export = json.loads(resp.read())
+if "items" not in export:
+    logging.error("failed to fetch raindrop")
+    sys.exit(1)
+
+if os.environ.get("RAW"):
+    print(json.dumps(export))
+    sys.exit(0)
+
+items = []
+
+for item in export["items"]:
+    url = item["link"]
+    title = item["title"]
+    tags = item["tags"]
+    note = item["excerpt"]
+
+    collection_id = item["collectionId"]
+    if collection_id in collections:
+        collection = collections[collection_id]
+    else:
+        collection = None
+
+    tag = " ".join([f"#{x}" for x in tags])
+
+    if tag and collection:
+        subtitle = f"{tag} [{collection}] {url}"
+    elif collection:
+        subtitle = f"[{collection}] {url}"
+    elif tag:
+        subtitle = f"{tag} {url}"
+    else:
+        subtitle = url
+
+    parts = urlparse(url)
+    queryable_parts = f"{parts.netloc} {parts.path} {parts.params} {parts.query} {parts.fragment}"
+    url_parts = " ".join(re.split("\\W", queryable_parts))
+
+    items.append({
+        "title": title,
+        "subtitle": subtitle,
+        "arg": url,
+        "match": f"{url} {url_parts} {title} {tag} {note} {collection or ''}"
+    })
+
+print(json.dumps({"items": items}))
