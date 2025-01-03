@@ -10,7 +10,7 @@ from urllib.request import Request, urlopen
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
-    stream=sys.stderr,
+    stream=sys.stdout if os.getenv("MERGE_STREAMS") else sys.stderr,
     format='[%(asctime)s] %(levelname)s * %(message)s',
     level=logging.DEBUG if os.getenv("DEBUG") else logging.WARNING)
 
@@ -26,17 +26,17 @@ def load_collections():
 
     return {x["_id"]: x["title"] for x in collections["items"]}
 
-def load_all_bookmarks():
+def load_all_bookmarks(per_page=50, max_pages=1000):
     bookmarks = []
 
-    url = "https://api.raindrop.io/rest/v1/raindrops/0?perpage=50&page={}"
+    url = f"https://api.raindrop.io/rest/v1/raindrops/0?perpage={per_page}&page=" + "{}"
 
     page = 0
-    while True:
+    while page < max_pages:
         req = Request(url.format(str(page)))
         req.add_header("Authorization", f"Bearer {os.environ['RAINDROP_TOKEN']}")
 
-        logging.debug("loading page", page, "loaded", len(bookmarks), "bookmarks")
+        logging.debug(f"loading req={req.full_url}")
 
         resp = urlopen(req, timeout=5)
         payload = json.loads(resp.read())
@@ -44,6 +44,8 @@ def load_all_bookmarks():
             return bookmarks
 
         bookmarks += payload["items"]
+        logging.debug(f"loaded page={page}, accumulated_count={len(bookmarks)}")
+
         page += 1
 
     return bookmarks
@@ -52,11 +54,14 @@ if "RAINDROP_TOKEN" not in os.environ or not os.environ["RAINDROP_TOKEN"]:
     logging.error("missing raindrop token")
     sys.exit(1)
 
+per_page = int(os.environ.get("PER_PAGE", "50"))
+max_pages = int(os.environ.get("MAX_PAGES", "1000"))
+
 collections = load_collections()
-bookmarks = load_all_bookmarks()
+bookmarks = load_all_bookmarks(per_page=per_page, max_pages=max_pages)
 
 if os.environ.get("RAW"):
-    print(json.dumps(items))
+    print(json.dumps(bookmarks))
     sys.exit(0)
 
 items = []

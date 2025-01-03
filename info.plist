@@ -10,7 +10,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>43986A7E-422E-410D-BB94-2050D0D14F3F</string>
+				<string>8045AFA1-B14B-4719-B7C8-F5219020356A</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -37,7 +37,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>8045AFA1-B14B-4719-B7C8-F5219020356A</string>
+				<string>009A68E3-3688-4957-8A5C-490EB2B6D6B4</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -63,7 +63,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>009A68E3-3688-4957-8A5C-490EB2B6D6B4</string>
+				<string>43986A7E-422E-410D-BB94-2050D0D14F3F</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -137,6 +137,27 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string></string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>C0255505-9B05-4AAE-8F1E-52247948088A</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -186,27 +207,6 @@ cat "${alfred_workflow_data}/bookmarks.json"</string>
 			<string>453B2FF4-E51A-4CBE-807B-D81570F4C2FD</string>
 			<key>version</key>
 			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>skipqueryencode</key>
-				<false/>
-				<key>skipvarencode</key>
-				<false/>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string></string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>C0255505-9B05-4AAE-8F1E-52247948088A</string>
-			<key>version</key>
-			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -327,26 +327,6 @@ fi</string>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>argument</key>
-				<string>{query}</string>
-				<key>passthroughargument</key>
-				<false/>
-				<key>variables</key>
-				<dict>
-					<key>RAINDROP_TOKEN</key>
-					<string>{var:raindrop_token}</string>
-				</dict>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.argument</string>
-			<key>uid</key>
-			<string>43986A7E-422E-410D-BB94-2050D0D14F3F</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>conditions</key>
 				<array>
 					<dict>
@@ -393,6 +373,26 @@ fi</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argument</key>
+				<string>{query}</string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict>
+					<key>RAINDROP_TOKEN</key>
+					<string>{var:raindrop_token}</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>43986A7E-422E-410D-BB94-2050D0D14F3F</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>lastpathcomponent</key>
 				<false/>
 				<key>onlyshowifquerypopulated</key>
@@ -410,42 +410,6 @@ fi</string>
 			<string>35415B00-5375-45FE-9EFC-728D28C18EFB</string>
 			<key>version</key>
 			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>echo "Script dir: $(pwd)"
-echo
-
-echo "  Data dir: ${alfred_workflow_data}"
-echo
-
-echo "Cache count: $(jq ".items|length" "${alfred_workflow_data}/bookmarks.json")"
-echo
-
-ls -l "${alfred_workflow_data}/bookmarks.json"
-echo
-
-echo "Cached bookmarks..."
-cat "${alfred_workflow_data}/bookmarks.json" | jq .</string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>11</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>6FC3B5D4-FB86-4F5B-A782-96F2C9DEF5BE</string>
-			<key>version</key>
-			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -480,6 +444,50 @@ cat "${alfred_workflow_data}/bookmarks.json" | jq .</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>echo Script dir:
+echo $(pwd)
+echo
+
+echo Data dir:
+echo ${alfred_workflow_data}
+echo
+
+echo Cache count:
+echo $(jq ".items|length" "${alfred_workflow_data}/bookmarks.json")
+echo
+
+echo Bookmark file:
+ls -l "${alfred_workflow_data}/bookmarks.json"
+echo
+
+echo Test fetch:
+RAW=1 DEBUG=1 MAX_PAGES=1 PER_PAGE=1 MERGE_STREAMS=1 RAINDROP_TOKEN=${RAINDROP_TOKEN} ./fetch
+echo
+
+echo Cached bookmarks:
+jq . "${alfred_workflow_data}/bookmarks.json"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>11</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>6FC3B5D4-FB86-4F5B-A782-96F2C9DEF5BE</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
@@ -488,7 +496,7 @@ cat "${alfred_workflow_data}/bookmarks.json" | jq .</string>
 		<key>009A68E3-3688-4957-8A5C-490EB2B6D6B4</key>
 		<dict>
 			<key>xpos</key>
-			<real>265</real>
+			<real>310</real>
 			<key>ypos</key>
 			<real>245</real>
 		</dict>
@@ -502,9 +510,9 @@ cat "${alfred_workflow_data}/bookmarks.json" | jq .</string>
 		<key>43986A7E-422E-410D-BB94-2050D0D14F3F</key>
 		<dict>
 			<key>xpos</key>
-			<real>385</real>
+			<real>215</real>
 			<key>ypos</key>
-			<real>240</real>
+			<real>255</real>
 		</dict>
 		<key>453B2FF4-E51A-4CBE-807B-D81570F4C2FD</key>
 		<dict>
