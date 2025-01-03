@@ -61,7 +61,7 @@ collections = load_collections()
 bookmarks = load_all_bookmarks(per_page=per_page, max_pages=max_pages)
 
 if os.environ.get("RAW"):
-    print(json.dumps(bookmarks))
+    print(json.dumps(bookmarks, indent=4))
     sys.exit(0)
 
 items = []
