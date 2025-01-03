@@ -10,45 +10,66 @@ from urllib.request import Request, urlopen
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
-    stream=sys.stdout,
+    stream=sys.stderr,
     format='[%(asctime)s] %(levelname)s * %(message)s',
-    level=logging.DEBUG if os.getenv("DEBUG") else logging.ERROR)
+    level=logging.DEBUG if os.getenv("DEBUG") else logging.WARNING)
+
+def load_collections():
+    req = Request("https://api.raindrop.io/rest/v1/collections")
+    req.add_header("Authorization", f"Bearer {os.environ['RAINDROP_TOKEN']}")
+
+    resp = urlopen(req, timeout=5)
+    collections = json.loads(resp.read())
+    if "items" not in collections:
+        logging.error("failed to fetch raindrop collections")
+        sys.exit(1)
+
+    return {x["_id"]: x["title"] for x in collections["items"]}
+
+def load_all_bookmarks():
+    bookmarks = []
+
+    url = "https://api.raindrop.io/rest/v1/raindrops/0?perpage=50&page={}"
+
+    page = 0
+    while True:
+        req = Request(url.format(str(page)))
+        req.add_header("Authorization", f"Bearer {os.environ['RAINDROP_TOKEN']}")
+
+        logging.debug("loading page", page, "loaded", len(bookmarks), "bookmarks")
+
+        resp = urlopen(req, timeout=5)
+        payload = json.loads(resp.read())
+        if not payload or "items" not in payload or len(payload["items"]) == 0:
+            return bookmarks
+
+        bookmarks += payload["items"]
+        page += 1
+
+    return bookmarks
 
 if "RAINDROP_TOKEN" not in os.environ or not os.environ["RAINDROP_TOKEN"]:
     logging.error("missing raindrop token")
     sys.exit(1)
 
-req = Request("https://api.raindrop.io/rest/v1/collections")
-req.add_header("Authorization", f"Bearer {os.environ['RAINDROP_TOKEN']}")
-
-resp = urlopen(req, timeout=5)
-collections = json.loads(resp.read())
-if "items" not in collections:
-    logging.error("failed to fetch raindrop collections")
-    sys.exit(1)
-
-collections = {x["_id"]: x["title"] for x in collections["items"]}
-
-req = Request("https://api.raindrop.io/rest/v1/raindrops/0")
-req.add_header("Authorization", f"Bearer {os.environ['RAINDROP_TOKEN']}")
-
-resp = urlopen(req, timeout=5)
-export = json.loads(resp.read())
-if "items" not in export:
-    logging.error("failed to fetch raindrop")
-    sys.exit(1)
+collections = load_collections()
+bookmarks = load_all_bookmarks()
 
 if os.environ.get("RAW"):
-    print(json.dumps(export))
+    print(json.dumps(items))
     sys.exit(0)
 
 items = []
 
-for item in export["items"]:
+for item in bookmarks:
+    if "link" not in item:
+        logging.warning(f"no link, item={item}")
+        continue
+
     url = item["link"]
-    title = item["title"]
-    tags = item["tags"]
-    note = item["excerpt"]
+    title = item["title"] if "title" in item else None
+    tags = item["tags"] if "tags" in item else None
+    note = item["excerpt"] if "excerpt" in item else None
 
     collection_id = item["collectionId"]
     if collection_id in collections:

@@ -20,6 +20,18 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>6FC3B5D4-FB86-4F5B-A782-96F2C9DEF5BE</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>sourceoutputuid</key>
+				<string>1F478D23-7455-4CC0-9B22-659E3997D6A2</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 		<key>43986A7E-422E-410D-BB94-2050D0D14F3F</key>
 		<array>
@@ -85,6 +97,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>6FC3B5D4-FB86-4F5B-A782-96F2C9DEF5BE</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>55CF3228-DFD9-487C-B306-C298629ACA35</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>8045AFA1-B14B-4719-B7C8-F5219020356A</key>
 		<array>
 			<dict>
@@ -109,27 +134,6 @@
 	<string>Rainfred</string>
 	<key>objects</key>
 	<array>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>skipqueryencode</key>
-				<false/>
-				<key>skipvarencode</key>
-				<false/>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string></string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>C0255505-9B05-4AAE-8F1E-52247948088A</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
@@ -182,6 +186,27 @@ cat "${alfred_workflow_data}/bookmarks.json"</string>
 			<string>453B2FF4-E51A-4CBE-807B-D81570F4C2FD</string>
 			<key>version</key>
 			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string></string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>C0255505-9B05-4AAE-8F1E-52247948088A</string>
+			<key>version</key>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -246,7 +271,7 @@ fi</string>
 				<key>fixedorder</key>
 				<false/>
 				<key>items</key>
-				<string>[{"title":"Refresh","arg":"refresh"}]</string>
+				<string>[{"title":"Refresh","arg":"refresh"},{"title":"Info","arg":"info"}]</string>
 				<key>keyword</key>
 				<string>:r</string>
 				<key>matchmode</key>
@@ -338,11 +363,25 @@ fi</string>
 						<key>uid</key>
 						<string>29EBF769-E33A-4A18-B08E-72810499B22F</string>
 					</dict>
+					<dict>
+						<key>inputstring</key>
+						<string></string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>0</integer>
+						<key>matchstring</key>
+						<string>info</string>
+						<key>outputlabel</key>
+						<string>info</string>
+						<key>uid</key>
+						<string>1F478D23-7455-4CC0-9B22-659E3997D6A2</string>
+					</dict>
 				</array>
 				<key>elselabel</key>
 				<string>else</string>
 				<key>hideelse</key>
-				<false/>
+				<true/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.utility.conditional</string>
@@ -369,6 +408,75 @@ fi</string>
 			<string>alfred.workflow.output.notification</string>
 			<key>uid</key>
 			<string>35415B00-5375-45FE-9EFC-728D28C18EFB</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>echo "Script dir: $(pwd)"
+echo
+
+echo "  Data dir: ${alfred_workflow_data}"
+echo
+
+echo "Cache count: $(jq ".items|length" "${alfred_workflow_data}/bookmarks.json")"
+echo
+
+ls -l "${alfred_workflow_data}/bookmarks.json"
+echo
+
+echo "Cached bookmarks..."
+cat "${alfred_workflow_data}/bookmarks.json" | jq .</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>11</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>6FC3B5D4-FB86-4F5B-A782-96F2C9DEF5BE</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>behaviour</key>
+				<integer>0</integer>
+				<key>fontmode</key>
+				<integer>2</integer>
+				<key>fontsizing</key>
+				<integer>0</integer>
+				<key>footertext</key>
+				<string></string>
+				<key>inputfile</key>
+				<string></string>
+				<key>inputtype</key>
+				<integer>0</integer>
+				<key>loadingtext</key>
+				<string></string>
+				<key>outputmode</key>
+				<integer>0</integer>
+				<key>scriptinput</key>
+				<integer>0</integer>
+				<key>spellchecking</key>
+				<integer>0</integer>
+				<key>stackview</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.userinterface.text</string>
+			<key>uid</key>
+			<string>55CF3228-DFD9-487C-B306-C298629ACA35</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -405,6 +513,13 @@ fi</string>
 			<key>ypos</key>
 			<real>65</real>
 		</dict>
+		<key>55CF3228-DFD9-487C-B306-C298629ACA35</key>
+		<dict>
+			<key>xpos</key>
+			<real>745</real>
+			<key>ypos</key>
+			<real>435</real>
+		</dict>
 		<key>6C67645B-EC6B-408D-AFB5-AC54F1FCF2DD</key>
 		<dict>
 			<key>xpos</key>
@@ -425,6 +540,13 @@ fi</string>
 			<real>640</real>
 			<key>ypos</key>
 			<real>230</real>
+		</dict>
+		<key>6FC3B5D4-FB86-4F5B-A782-96F2C9DEF5BE</key>
+		<dict>
+			<key>xpos</key>
+			<real>480</real>
+			<key>ypos</key>
+			<real>435</real>
 		</dict>
 		<key>8045AFA1-B14B-4719-B7C8-F5219020356A</key>
 		<dict>
