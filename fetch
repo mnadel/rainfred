@@ -14,9 +14,14 @@ logging.basicConfig(
     format='[%(asctime)s] %(levelname)s * %(message)s',
     level=logging.DEBUG if os.getenv("DEBUG") else logging.WARNING)
 
-def load_collections():
-    req = Request("https://api.raindrop.io/rest/v1/collections")
+def create_request(url):
+    req = Request(url)
     req.add_header("Authorization", f"Bearer {os.environ['RAINDROP_TOKEN']}")
+    return req
+
+def load_collections():
+    req = create_request("https://api.raindrop.io/rest/v1/collections")
+    logging.debug(f"loading req={req.full_url}")
 
     resp = urlopen(req, timeout=5)
     collections = json.loads(resp.read())
@@ -29,13 +34,11 @@ def load_collections():
 def load_all_bookmarks(per_page=50, max_pages=1000):
     bookmarks = []
 
-    url = f"https://api.raindrop.io/rest/v1/raindrops/0?perpage={per_page}&page=" + "{}"
+    url = f"https://api.raindrop.io/rest/v1/raindrops/0?perpage={per_page}&page={{}}"
 
     page = 0
     while page < max_pages:
-        req = Request(url.format(str(page)))
-        req.add_header("Authorization", f"Bearer {os.environ['RAINDROP_TOKEN']}")
-
+        req = create_request(url.format(str(page)))
         logging.debug(f"loading req={req.full_url}")
 
         resp = urlopen(req, timeout=5)
@@ -57,7 +60,6 @@ if "RAINDROP_TOKEN" not in os.environ or not os.environ["RAINDROP_TOKEN"]:
 per_page = int(os.environ.get("PER_PAGE", "50"))
 max_pages = int(os.environ.get("MAX_PAGES", "1000"))
 
-collections = load_collections()
 bookmarks = load_all_bookmarks(per_page=per_page, max_pages=max_pages)
 
 if os.environ.get("RAW"):
@@ -65,6 +67,7 @@ if os.environ.get("RAW"):
     sys.exit(0)
 
 items = []
+collections = load_collections()
 
 for item in bookmarks:
     if "link" not in item:
@@ -102,7 +105,7 @@ for item in bookmarks:
         "title": title,
         "subtitle": subtitle,
         "arg": url,
-        "match": f"{url} {url_parts} {title or ''} {' '.join(tags)} {note or ''} {excerpt or ''} {collection or ''}"
+        "match": f"{url} {url_parts} {title or ''} {tag} {' '.join(tags)} {note or ''} {excerpt or ''} {collection or ''}"
     })
 
 print(json.dumps({"items": items}))
