@@ -74,7 +74,8 @@ for item in bookmarks:
     url = item["link"]
     title = item["title"] if "title" in item else None
     tags = item["tags"] if "tags" in item else None
-    note = item["excerpt"] if "excerpt" in item else None
+    note = item["note"] if "note" in item else None
+    excerpt = item["excerpt"] if "excerpt" in item else None
 
     collection_id = item["collectionId"]
     if collection_id in collections:
@@ -101,7 +102,7 @@ for item in bookmarks:
         "title": title,
         "subtitle": subtitle,
         "arg": url,
-        "match": f"{url} {url_parts} {title} {tag} {note} {collection or ''}"
+        "match": f"{url} {url_parts} {title or ''} {' '.join(tags)} {note or ''} {excerpt or ''} {collection or ''}"
     })
 
 print(json.dumps({"items": items}))
