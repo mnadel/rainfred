@@ -79,6 +79,7 @@ for item in bookmarks:
     tags = item["tags"] if "tags" in item else None
     note = item["note"] if "note" in item else None
     excerpt = item["excerpt"] if "excerpt" in item else None
+    ts = item["lastUpdate"] if "lastUpdate" in item else None
 
     collection_id = item["collectionId"]
     if collection_id in collections:
@@ -105,7 +106,13 @@ for item in bookmarks:
         "title": title,
         "subtitle": subtitle,
         "arg": url,
+        "_ts": ts,
         "match": f"{url} {url_parts} {title or ''} {tag} {' '.join(tags)} {note or ''} {excerpt or ''} {collection or ''}"
     })
 
-print(json.dumps({"items": items}))
+# sort by most recent first, then remove the now-unnecessary timestamp
+descending = sorted(items, key=lambda x: x["_ts"], reverse=True)
+for i in descending:
+    del i["_ts"]
+
+print(json.dumps({"items": descending}))
